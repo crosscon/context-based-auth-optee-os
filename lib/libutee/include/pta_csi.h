@@ -12,6 +12,7 @@
 #define PTA_CSI_CMD_SET_MAC_FILTER                  2
 #define PTA_CSI_CMD_DISABLE_MAC_FILTER              3
 #define PTA_CSI_CMD_SET_PARAMS_AND_START            4
+#define PTA_CSI_CMD_ZERO_ALL                        5
 
 
 #endif /* __PTA_CSIH */

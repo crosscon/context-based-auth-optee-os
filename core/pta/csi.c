@@ -20,7 +20,7 @@ TEE_Result physical_memory_address_to_pointer(size_t physical_addr, void** virtu
     vaddr = core_mmu_add_mapping(MEM_AREA_IO_SEC, CSI_PHYSICAL_ADDR_START, CSI_PHYSICAL_ADDR_SIZE);
 
     if (vaddr == NULL)
-        vaddr = phys_to_virt(physical_addr, MEM_AREA_IO_NSEC, 1);
+        vaddr = phys_to_virt(physical_addr, MEM_AREA_IO_SEC, 1);
 
     if (vaddr == NULL)
         return TEE_ERROR_OUT_OF_MEMORY;
@@ -144,6 +144,21 @@ TEE_Result start_query() {
 }
 
 
+TEE_Result zero_all() {
+    TEE_Result res;
+    uint8_t* base;
+
+    res = physical_memory_address_to_pointer(CSI_PHYSICAL_ADDR_START, (void**) &base);
+    if (res != TEE_SUCCESS)
+        return res;
+
+    for (uint8_t i = 0; i < 12; i++)
+        base[i] = 0;
+
+    return TEE_SUCCESS;
+}
+
+
 
 /* ********************* */
 /* COMMAND WRAPPER FUNCS */
@@ -262,6 +277,22 @@ TEE_Result command_set_recording_parameters_and_start(uint32_t param_types, TEE_
 }
 
 
+TEE_Result command_zero_all(uint32_t param_types, TEE_Param params[TEE_NUM_PARAMS]) {
+    TEE_Result res;
+    uint32_t exp_param_types = TEE_PARAM_TYPES(
+        TEE_PARAM_TYPE_NONE,
+        TEE_PARAM_TYPE_NONE,
+        TEE_PARAM_TYPE_NONE,
+        TEE_PARAM_TYPE_NONE
+    );
+
+    if (param_types != exp_param_types)
+        return TEE_ERROR_BAD_PARAMETERS;
+
+    return zero_all();
+}
+
+
 
 /* ****************** */
 /* MANDATORY TA STUFF */
@@ -280,6 +311,8 @@ static TEE_Result invoke_command(void* sess_ctx, uint32_t cmd_id, uint32_t param
             return command_disable_mac_filter(param_types, params);
         case PTA_CSI_CMD_SET_PARAMS_AND_START:
             return command_set_recording_parameters_and_start(param_types, params);
+        case PTA_CSI_CMD_ZERO_ALL:
+            return command_zero_all(param_types, params);
         default:
             return TEE_ERROR_NOT_SUPPORTED;
     }
