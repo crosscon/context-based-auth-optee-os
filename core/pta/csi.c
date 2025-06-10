@@ -32,7 +32,7 @@ TEE_Result physical_memory_address_to_pointer(size_t physical_addr, void** virtu
 
 
 /* available == 0  <==>  data is available */
-TEE_Result check_if_response_available(uint8_t* available, uint8_t* return_reason, uint32_t* num_bytes_collected) {
+TEE_Result check_if_response_available(uint8_t* available, uint8_t* return_reason, uint32_t* num_samples_collected) {
     TEE_Result res;
     uint8_t* base;
 
@@ -43,7 +43,7 @@ TEE_Result check_if_response_available(uint8_t* available, uint8_t* return_reaso
     if ((base[0] & 0b10) > 0) {
         *available = true;
         *return_reason = base[7];
-        *num_bytes_collected = (base[8] << 24) | (base[9] << 16) | (base[10] << 8) | base[11];
+        *num_samples_collected = (base[11] << 24) | (base[10] << 16) | (base[9] << 8) | base[8];
     } else {
         *available = false;
     }
@@ -52,19 +52,16 @@ TEE_Result check_if_response_available(uint8_t* available, uint8_t* return_reaso
 }
 
 
-TEE_Result read_data(uint8_t* buffer, uint32_t buffer_size, uint32_t read_offset, uint32_t* actually_read) {
+TEE_Result read_data(uint8_t* buffer, uint32_t bytes_to_read, uint32_t read_offset, uint32_t* actually_read) {
     TEE_Result res;
     uint8_t* base;
 
     uint32_t num_bytes_collected;
-    uint32_t bytes_to_read;
+    *actually_read = 0;
 
     res = physical_memory_address_to_pointer(CSI_PHYSICAL_ADDR_START, (void**) &base);
     if (res != TEE_SUCCESS)
         return res;
-
-    num_bytes_collected = (base[8] << 24) | (base[9] << 16) | (base[10] << 8) | base[11];
-    bytes_to_read = buffer_size > num_bytes_collected - read_offset ? num_bytes_collected - read_offset : buffer_size;
 
     for (uint32_t i = 0; i < bytes_to_read; i++) {
         buffer[i] = base[312 + read_offset + i];
