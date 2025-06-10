@@ -14,6 +14,8 @@ This repository is modified in order to support the CBA TA. These modifications 
 - enable communication via mTLS (adapted configuration for libmbedtls)
 - support communication with Nexmon VM (added PTA for reading from & writing to memory)
 
+This OS is supposed to work together with the [accompanying Trusted Application (TA)](https://github.com/crosscon/context-based-auth-trusted-application). See there for more information on how to include this in a setup.
+
 
 ## Configuration
 
