@@ -120,8 +120,8 @@ TEE_Result set_recording_parameters(uint8_t wifi_channel, uint8_t wifi_channel_b
 
     base[3] = num_samples_per_device;
 
-    base[4] = (recording_timeout & 0xff00) >> 8;
-    base[5] = recording_timeout & 0x00ff;
+    base[4] = recording_timeout & 0x00ff;
+    base[5] = (recording_timeout & 0xff00) >> 8;
 
     return TEE_SUCCESS;
 }
