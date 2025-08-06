@@ -11,7 +11,11 @@ All official OP-TEE documentation has moved to http://optee.readthedocs.io.
 
 This modified version of OP-TEE OS contains a proof-of-concept implementation of a proposed GlobalPlatform API compatible mechanism to collect CSI samples from a connected hardware peripheral and is part of the [CROSSCON project](https://crosscon.eu/). This mechanism is added as a Pseudo Trusted Application to OP-TEE's core, and can be implemented in a hardware-specific manner. As a consequence, Trusted Applications are independent of the actual hardware. The implementation is part of deliverable D4.4.
 
-A demonstrator can be found in [this repository](https://github.com/crosscon/context-based-auth-crosscon-demo).
+A demonstrator which uses this API in a Trusted Service used for Context-based Authentication and adds a working system around this TEE can be found in [this repository](https://github.com/crosscon/context-based-auth-crosscon-demo).
+
+This specific implementation targets the Raspberry Pi 4 with its Wi-Fi peripheral, and runs as a VM on a CROSSCON Hypervisor instance. While there is no way to access CSI data by default, a firmware modification exists which forwards the samples to user space. This modification requires Linux to run, so we host a separate VM using the hypervisor which can only communicate with OP-TEE. The communication is facilitated through a Pseudo Trusted Application added the OP-TEE OS core at `core/pta/memread.c`, which also proivdes the API to the trusted application.
+
+A more detailed overview of how exactly the communication is handled and which exact API is used can be found in deliverable D4.3.
 
 
 # Modifications for Context-based Authentication (CBA)
