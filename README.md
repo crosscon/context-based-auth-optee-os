@@ -7,6 +7,13 @@ All official OP-TEE documentation has moved to http://optee.readthedocs.io.
 // OP-TEE core maintainers
 
 
+# Overview
+
+This modified version of OP-TEE OS contains a proof-of-concept implementation of a proposed GlobalPlatform API compatible mechanism to collect CSI samples from a connected hardware peripheral and is part of the [CROSSCON project](https://crosscon.eu/). This mechanism is added as a Pseudo Trusted Application to OP-TEE's core, and can be implemented in a hardware-specific manner. As a consequence, Trusted Applications are independent of the actual hardware. The implementation is part of deliverable D4.4.
+
+A demonstrator can be found in [this repository](https://github.com/crosscon/context-based-auth-crosscon-demo).
+
+
 # Modifications for Context-based Authentication (CBA)
 
 This repository is modified in order to support the CBA TA. These modifications serve two purposes:
